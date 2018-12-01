@@ -1,12 +1,8 @@
-const kamus = require('./data.js');
-const kamusDummy = ['APPLE', 'SIT' , 'TRIP' ,'TURN' , 'SUPER']
-
 class Boggle {
   constructor(size) {
     this.size = size
-    this.kamus = ['APPLE', 'SIT' , 'TRIP' ,'TURN' , 'SUPER']
-    //ingat ubah balik boardnya jadi array kosong!
-    this.board = [['D', 'G', 'H' ,'I'], [ 'K' ,'L' ,'P' ,'S'], [ 'Y' ,'E' ,'U' ,'T'] , [ 'E' ,'O' ,'R' ,'N']]
+    this.kamus = require('./data.js').words
+    this.board = []
   }
 
   shake(){
@@ -18,7 +14,7 @@ class Boggle {
       }
       this.board.push(temp)
     }
-    return this.board
+    console.log(this.board)
   }
 
   solve() {
@@ -27,29 +23,25 @@ class Boggle {
 
     for (let i = 0; i < this.kamus.length; i++) {
       let coor = []
+      let papan = JSON.parse(JSON.stringify(this.board))
       for (let j = 0; j < this.kamus[i].length; j++) {
         if ( j == 0) {
-          let cekFirst = this.firstIdx(this.kamus[i][j])
+          let cekFirst = this.firstIdx(papan, this.kamus[i][j])
           if (cekFirst[0] == true ) {
-            console.log('masukkk first')
             coor.push(cekFirst[1])
-            this.board[coor[0][0]][coor[0][1]] = ' '
+            papan[coor[0][0]][coor[0][1]] = ' '
             count++
-          } else {
-            break
-          }
+          } else break
         } else {
-          let cek2 = this.chekGrid(this.board , this.kamus[i][j] , coor[coor.length -1]) 
+          let cek2 = this.chekGrid(papan , this.kamus[i][j] , coor[coor.length -1]) 
           if (cek2[0] == true) {
-            console.log('masukkk seccc')
             coor.push(cek2[1])
-            this.board[coor[coor.length - 1][0]][coor[coor.length - 1][1]] = ' '
+            papan[coor[coor.length - 1][0]][coor[coor.length - 1][1]] = ' '
             count++
           } else {
-            console.log('g ketemu')
             coor = coor.slice(0 , coor.length - 1)
-            count--
             j -=2
+            count--
           }
         }
       }
@@ -57,23 +49,23 @@ class Boggle {
         found.push(this.kamus[i])
         count = 0
       }
-    }
-    console.log(this.board)
-      
-    console.log(`${found.length} words found : `)
-    console.log(found.join('\n'))
+    }      
+    console.log(`${found.length} words found : \n${found.join('\n')}`)
   }
 
-  firstIdx(kamus) {
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[i].length; j++) {
-        if(this.board[i][j] == kamus) {
-          return [true,[i,j]]
-        }         
-      }
-      
-    }
-    return [false]
+  firstIdx(board ,kamus) {
+    let cond = false
+    let coor = []
+
+    board.forEach((arr ,i) => {
+      arr.forEach((char , j) => {
+        if(char == kamus) {
+          cond = true
+          coor.push(i,j)
+        }    
+      })
+    });
+    return [cond , coor]
   }
 
   chekGrid(board , kamus , coor) {
@@ -82,15 +74,10 @@ class Boggle {
     let jstart = coor[1] - 1
     let jend = coor[1] + 1
 
-    if (istart < 0) {
-      istart = 0
-    } else if (iend > board.length - 1) {
-      iend = board.length - 1
-    } else if (jstart < 0 ) {
-      jstart = 0
-    } else if (jend > board.length - 1) {
-      jend = board.length
-    }
+    if (istart < 0) istart = 0
+    else if (iend > board.length - 1) iend = board.length - 1
+    else if (jstart < 0 ) jstart = 0
+    else if (jend > board.length - 1) jend = board.length
 
     for (let i = istart; i <= iend; i++) {
       for (let j = jstart; j <= jend; j++) {
@@ -104,12 +91,10 @@ class Boggle {
 
 }
 
-let boggle = new Boggle(4);
-
+let boggle = new Boggle(5);
+boggle.shake()
+boggle.solve();
 // let arr = Array.apply(null, Array(4)).map(function() {
 //   return new Array(9);
 // });
-// console.log(boggle.shake())
-console.log(boggle.board)
-boggle.solve();
 
