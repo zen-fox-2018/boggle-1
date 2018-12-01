@@ -6,15 +6,15 @@ const kamus = require('./data.js');
 class Boggle {
   constructor(num) {
     this.size = num;
-    // this.myBoard =
-    // [ [ 'R', 'W', 'M', 'G' ],
-    //   [ 'O', 'Y', 'O', 'G' ],
-    //   [ 'K', 'J', 'N', 'L' ],
-    //   [ 'Z', 'N', 'H', 'P' ] ]
+    this.myBoard =
+    [ [ 'D', 'E', 'H', 'I'],
+      [ 'K', 'L', 'P', 'S' ],
+      [ 'Y', 'E', 'U', 'T' ],
+      [ 'E', 'O', 'R', 'N' ] ]
 
-    this.myBoard = this.shake();
-    this.dictionary = kamus;
-    // this.dictionary = { words: ['MOMO'] };
+    // this.myBoard = this.shake();
+    // this.dictionary = kamus;
+    this.dictionary = { words: [ 'APPLE', 'SIT', 'TRIP', 'TURN', 'SUPER' ] };
   }
 
   shake () {
@@ -44,33 +44,37 @@ class Boggle {
   }
 
   checkSentence (sentence){
-    let board = this.myBoard.map( e => e.slice(0));
     let myTrack = [];
-    // let indexTrack = 0;
     let index = 0;
-    if (this.getFirst(sentence[index]).length) {
-      myTrack.push(this.getFirst(sentence[index]));
-      // console.log(sentence[index], myTrack);
+    let board = JSON.parse(JSON.stringify(this.myBoard));
+    let checkFirst = this.getFirst(sentence[0], board);
+    if(checkFirst.length) {
+      myTrack.push(checkFirst);
     } else {
       return [];
     }
+
     while (sentence[index + 1] != undefined) {
-      debugger;
-      for (var i = 0; i < myTrack[index].length; i++) {
-        let x = myTrack[index][i].x;
-        let y = myTrack[index][i].y;
-        let huruf = board[x][y];
-        board[x][y] = ' ';
-        let cek = this.getNext([x, y], sentence[index + 1], board);
-        if(cek.length) {
-          myTrack.push(cek);
-        } else if (i - 1 < 0) {
-          return [];
+      let tempResult = [];
+      for (let i = 0; i < myTrack[index].length; i++) {
+        let nextCheck = myTrack[index][i];
+        let checkBoard = JSON.parse(JSON.stringify(nextCheck.board));
+        if (this.getNext(nextCheck.index, sentence[index + 1], nextCheck.board).length) {
+          this.getNext(nextCheck.index, sentence[index + 1], nextCheck.board).forEach( e => tempResult.push(e));
         }
+        debugger;
+        let tempP = JSON.stringify(tempResult);
+        // break;
+      }
+      // break;
+      if(tempResult.length) {
+        myTrack[myTrack.length] = tempResult;
+        // console.log( JSON.stringify(tempResult ));
+      } else {
+        return [];
       }
       index++;
     }
-    // console.log(myTrack);
     return myTrack;
   }
 
@@ -85,20 +89,24 @@ class Boggle {
 
     for (let i = start[0]; i <= end[0]; i++) {
       for (var j = start[1]; j <= end[1]; j++) {
-        if(board[i][j] === search) {
-          myResult.push({x : i, y: j});
+        let nextBoard = JSON.parse(JSON.stringify(board));
+        if(nextBoard[i][j] === search) {
+          nextBoard[i][j] = ' ';
+          myResult.push({index : [i,j], board : JSON.parse(JSON.stringify(nextBoard))});
         }
       }
     }
     return myResult;
   }
 
-  getFirst (search) {
+  getFirst (search, board) {
     let myResult = [];
-    for (let i = 0; i < this.myBoard.length; i++) {
-      for (var j = 0; j < this.myBoard[i].length; j++) {
-        if (this.myBoard[i][j] === search) {
-          myResult.push({x : i, y: j});
+    for (let i = 0; i < board.length; i++) {
+      for (var j = 0; j < board[i].length; j++) {
+        let firstBoard = JSON.parse(JSON.stringify(board));
+        if (firstBoard[i][j] === search) {
+          firstBoard[i][j] = ' ';
+          myResult.push({index : [i,j], board : JSON.parse(JSON.stringify(firstBoard))});
         }
       }
     }
@@ -110,3 +118,4 @@ class Boggle {
 
 let boggle = new Boggle(4);
 boggle.solve();
+// console.log(boggle.myBoard);
