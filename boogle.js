@@ -64,12 +64,9 @@ class Boggle {
         }
         debugger;
         let tempP = JSON.stringify(tempResult);
-        // break;
       }
-      // break;
       if(tempResult.length) {
         myTrack[myTrack.length] = tempResult;
-        // console.log( JSON.stringify(tempResult ));
       } else {
         return [];
       }
