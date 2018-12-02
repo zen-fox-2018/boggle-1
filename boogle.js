@@ -1,12 +1,21 @@
+
 const kamus = require('./data.js');
 
 //value kamus bertipe object of array
 //silakan di-console.log sendiri
 
+// this.sample = ["TURN","TRIP","APPLE","SUPER"];
+// this.dummy = [
+//   ["D", "G", "H", "I"],
+//   ["K", "L", "P", "S"],
+//   ["Y", "E", "U", "T"], 
+//   ["E", "O", "R", "N"]
+// ];
+
 class Boggle {
   constructor(number) {
     this.board = [];
-    this.number = this.shake(number)
+    this.number = this.shake(number);
     this.dummy = [
       ["D", "G", "H", "I"],
       ["K", "L", "P", "S"],
@@ -15,7 +24,8 @@ class Boggle {
     ];
     this.sample = ["TURN","TRIP","APPLE","SUPER"];
     this.coordinates = [];
-    this.kamus = kamus
+    this.nextCoordinates = [];
+    this.kamus = kamus;
   }
 
   shake(size) {
@@ -29,32 +39,27 @@ class Boggle {
         this.board[i].push(randomize);
       }
     }
-    return this.board
+    return this.board;
   }
 
   solve() { 
     let data = JSON.parse(JSON.stringify(this.kamus));
-
-    //the code below is just temporary
-    // console.log(this.sample)
-    for(let i = 0; i < this.sample.length; i++) {
-      // console.log(this.sample[i][0])
-      this.findFirstLetter(this.sample[i][0]);
-    }
   }
   
   findFirstLetter(words) {
-
     //check the first letter, see if it has any match in the dummy board
     for(let i = 0; i < this.dummy.length; i++) {
       for(let j = 0; j < this.dummy[i].length; j++) {
         if(this.dummy[i][j] === words) {
-          this.coordinates.push([i, j]) // --> store the coordinates in an array
-          // return true
+          // this.coordinates.push([i, j]) 
+          let firstWordIndex = {
+            row: i,
+            column: j
+          }
+          this.coordinates.push(firstWordIndex)
         }
       }
     }
-    // return false
   }
 
   checkGrid(row, column, words) {
@@ -66,34 +71,56 @@ class Boggle {
     let columnEnd = column + 1;
 
     if(rowStart < 0) {
-      rowStart = 0
+      rowStart = 0;
     } else if (rowEnd > this.dummy.length - 1) {
-      rowEnd = this.dummy.length - 1
+      rowEnd = this.dummy.length - 1;
     }
 
     if (columnStart < 0) {
-      columnStart = 0
+      columnStart = 0;
     } else if (columnEnd > this.dummy.length - 1) {
-      columnEnd = this.dummy.length - 1
+      columnEnd = this.dummy.length - 1;
     }
 
     // console.log(this.dummy)
+    let check = false
     for(let i = rowStart; i < rowEnd; i++) {
       for(let j = columnStart; j < columnEnd; j++) {
-        // console.log(i, "======", j)
         if (this.dummy[i][j] === words) {
-          return true
+          // console.log(i, "======", j)
+          let nextIndex = {
+            row: i,
+            column: j
+          }
+          this.nextCoordinates.push(nextIndex)
+          check = true
         }
       }
     }
-    return false
+    return check
+  }
+
+  findWords() {
+    // console.log("masuk ga")
+    for(let i = 0; i < this.sample.length; i++) {
+      let firstWord = this.sample[i][0]
+      let firstLetter = this.findFirstLetter(firstWord)
+
+      for(let j = 0; j < this.coordinates.length; j++) {
+        let row = this.coordinates[j].row;
+        let column = this.coordinates[j].column;
+
+        this.dummy[row][column] = "#";
+        
+      }
+    }
   }
 }
 
 let boggle = new Boggle(4);
+// boggle.checkGrid(2, 3, "P")
 boggle.solve()
-// console.log(boggle.findFirstLetter())
-console.log(boggle.checkGrid(2, 3, "P"))
+boggle.findWords()
 
 // console.log(dummy)
 // console.log(dummy[0][0], dummy[1][1], dummy[2][2], dummy[3][3]) //--> diagonal kiri
