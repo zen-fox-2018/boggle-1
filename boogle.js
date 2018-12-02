@@ -47,7 +47,7 @@ class Boggle {
       }
       this.history = []
     }
-    console.log(this.dummy.join('\n'));
+    console.log(this.dummy.join('\n')+'\n');
     console.log(this.board)
     console.log(`\n${wordsFound} words found :\n${result.join('\n')}`)
   }
@@ -93,8 +93,8 @@ class Boggle {
   }
 
   checkRepeated(i, j, history) {
-    for (let index = 0; index < history.length; index++) {
-      if (i == history[index][0] && j == history[index][1]) {
+    for (let k = 0; k < history.length; k++) {
+      if (i == history[k][0] && j == history[k][1]) {
         return false
       }
     }
