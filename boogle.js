@@ -67,8 +67,10 @@ class Boggle {
         let check = this.cekDalam([coorITemp,coorJTemp],kataKamus[k+1], dummyBoard)
         if(check.length){
           temp.push(check)
-          break
-        } 
+          break  
+        } else{
+          return []
+        }
       }
     
       k++
