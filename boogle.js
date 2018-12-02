@@ -5,15 +5,15 @@ const kamus = require('./data.js');
 //console.log(kamus.words)
 class Boggle {
   constructor(size , kamus) {
-    // this.board = this.shake()
-    // this.size = size
-    // this.kamus = kamus.words
-    this.size = 4
-    this.kamus= ['SAYA','SUKA','CODING','BANK','BCA','JAVASCRIPT','DAN','TIDUR','RUN','SUSU']
-    this.board= [ [ 'I', 'A', 'B', 'S' ],
-                  [ 'D', 'N', 'G', 'S' ],
-                  [ 'O', 'K', 'U', 'N' ],
-                  [ 'A', 'C', 'S', 'I' ] ]
+    this.size = size
+    this.board = this.shake()
+    this.kamus = kamus.words
+    // this.size = 4
+    // this.kamus= ['YOYO', 'SUSU', 'ANO', 'YAYA', 'SOSO']
+    // this.board= [ [ 'I', 'A', 'Y', 'O' ],
+    //               [ 'D', 'N', 'S', 'S' ],
+    //               [ 'O', 'U', 'S', 'N' ],
+    //               [ 'A', 'C', 'S', 'C' ] ]
    
     
   }
@@ -24,7 +24,7 @@ class Boggle {
     for(let i = 0; i < this.kamus.length; i++){
       if(this.cekKamus(this.kamus[i]).length){
         hasil.push(this.kamus[i])
-        //console.log(hasil,'ini hasil')
+        console.log(hasil,'ini hasil')
       }
     }
     return hasil
@@ -49,25 +49,28 @@ class Boggle {
     if(cekKataPertama.length){
 
       temp.push(cekKataPertama)
-    } else {
+    } else{
       return []
     }
     while(kataKamus[k+1] != undefined){ //Mencari kata selanjutnya ada di papan atau tidak
      if(!temp[k]){
+     
        return []
      }
       for(let i = 0; i < temp[k].length; i ++){
-        console.log(temp,'Ini temp')
-         console.log(dummyBoard)
         let coorITemp = temp[k][i][0]
         let coorJTemp = temp[k][i][1]
         dummyBoard[coorITemp][coorJTemp] = ' '   
-         
+          console.log(temp,'Ini temp')
+          console.log(k,'Ini current k')
+          console.log(dummyBoard)
         let check = this.cekDalam([coorITemp,coorJTemp],kataKamus[k+1], dummyBoard)
         if(check.length){
           temp.push(check)
+          break
         } 
       }
+    
       k++
     }
     return temp
@@ -100,22 +103,6 @@ class Boggle {
     return hasil
   }
 
-  // kataPertama(string){
-  //   let arrayFirst=[]
-  //   for(let i = 0; i < this.board.length; i++){
-  //     for(let j = 0; j < this.board[i].length; j++){
-  //       if(this.board[i][j] === string){
-  //         arrayFirst.push({
-  //           coorI : i,
-  //           coorJ : j
-  //         })
-  //       }
-  //     }
-  //   }
-  //   return arrayFirst
-  // }
-
-
   kataPertama(string){
     let arrayFirst=[]
     for(let i = 0; i < this.board.length; i++){
@@ -127,7 +114,6 @@ class Boggle {
     }
     return arrayFirst
   }
-
 
 
   shake () {
@@ -149,9 +135,10 @@ class Boggle {
 
 let boggle = new Boggle(8 , kamus);
 //console.log(boggle.shake());
-console.log(boggle.board)
+
 console.log(boggle.solve());
+console.log(boggle.board)
 
 
-console.log(boggle.kataPertama('S'))
+console.log(boggle.kataPertama('S').slice(1))
 
