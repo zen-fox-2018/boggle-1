@@ -35,7 +35,7 @@ class Boggle {
     let myResult = [];
     console.log(this.myBoard);
     for (var i = 0; i < this.dictionary.words.length; i++) {
-      if(this.checkSentence(this.dictionary.words[i]).length) {
+      if(this.checkWord(this.dictionary.words[i]).length) {
         myResult.push(this.dictionary.words[i]);
       }
 
@@ -45,24 +45,24 @@ class Boggle {
     myResult.forEach(e => console.log(`- ${e}`));
   }
 
-  checkSentence (sentence){
+  checkWord (word){
     let myTrack = [];
     let index = 0;
     let board = JSON.parse(JSON.stringify(this.myBoard));
-    let checkFirst = this.getFirst(sentence[0], board);
+    let checkFirst = this.getFirst(word[0], board);
     if(checkFirst.length) {
       myTrack.push(checkFirst);
     } else {
       return [];
     }
 
-    while (sentence[index + 1] != undefined) {
+    while (word[index + 1] != undefined) {
       let tempResult = [];
       for (let i = 0; i < myTrack[index].length; i++) {
         let nextCheck = myTrack[index][i];
         let checkBoard = JSON.parse(JSON.stringify(nextCheck.board));
-        if (this.getNext(nextCheck.index, sentence[index + 1], nextCheck.board).length) {
-          this.getNext(nextCheck.index, sentence[index + 1], nextCheck.board).forEach( e => tempResult.push(e));
+        if (this.getNext(nextCheck.index, word[index + 1], nextCheck.board).length) {
+          this.getNext(nextCheck.index, word[index + 1], nextCheck.board).forEach( e => tempResult.push(e));
         }
       }
       if(tempResult.length) {
@@ -75,6 +75,7 @@ class Boggle {
     return myTrack;
   }
 
+  //get the letters around's index
   getNext (index, search, board) {
     let myResult = [];
     let start = [index[0] - 1, index[1] - 1];
@@ -95,7 +96,7 @@ class Boggle {
     }
     return myResult;
   }
-
+  //get first letter index
   getFirst (search, board) {
     let myResult = [];
     for (let i = 0; i < board.length; i++) {
