@@ -7,14 +7,16 @@ class Boogle {
   constructor(number) {
     this.boogleSize = number
     this.shakeAwal = this.shake()
-    this.dummyKamus = ["APPLE", "SIT", "TRIP", "TURN", "SUPER"]
+    this.kamus = kamus
+    this.reset = JSON.parse(JSON.stringify(this.shakeAwal))
+    this.dummyKamus = ["APPLE", "SIT", "TRIP", "TURN", "SUPER"]    
     this.dummyShake = [
       ["D", "G", "H", "I"],
       ["K", "L", "P", "S"],
       ["Y", "E", "U", "T"],
       ["E", "O", "R", "N"]
     ]
-    this.reset = JSON.parse(JSON.stringify(this.dummyShake))
+    // this.reset = JSON.parse(JSON.stringify(this.dummyShake))
     this.lokasiHurufAwal = []
     this.lokasiHurufBerikutnya = []    
 
@@ -38,9 +40,9 @@ class Boogle {
   // untuk tes pertama pake dummyShake bukan shakeAwal dan
   // kamus pake dummyKamus bukan kamus
   cekAwal(kata) {
-    for (let i = 0; i < this.dummyShake.length; i++) {
-      for (let j = 0; j < this.dummyShake[i].length; j++) {
-        if (kata[0] === this.dummyShake[i][j]) {
+    for (let i = 0; i < this.shakeAwal.length; i++) {
+      for (let j = 0; j < this.shakeAwal[i].length; j++) {
+        if (kata[0] === this.shakeAwal[i][j]) {
           let indeks = {}
           indeks['x'] = i
           indeks['y'] = j
@@ -59,21 +61,21 @@ class Boogle {
       start_a = 0
     }
     let end_a = indeks_i + 1
-    if (end_a > this.dummyShake.length - 1) {
-      end_a = this.dummyShake.length - 1
+    if (end_a > this.shakeAwal.length - 1) {
+      end_a = this.shakeAwal.length - 1
     }
     let start_b = indeks_j - 1
     if (start_b < 0) {
       start_b = 0
     }
     let end_b = indeks_j + 1
-    if (end_b > this.dummyShake.length - 1) {
-      end_b = this.dummyShake.length - 1
+    if (end_b > this.shakeAwal.length - 1) {
+      end_b = this.shakeAwal.length - 1
     }
 
     for (var a = start_a; a <= end_a; a++) {
       for (var b = start_b; b <= end_b; b++) {
-        if (abjad === this.dummyShake[a][b]) {
+        if (abjad === this.shakeAwal[a][b]) {
           let indeks = {}
           indeks['x'] = a
           indeks['y'] = b
@@ -100,7 +102,7 @@ class Boogle {
           let x = this.lokasiHurufBerikutnya[indeksTerakhir]['x']
           let y = this.lokasiHurufBerikutnya[indeksTerakhir]['y']
           // console.log(x, y)
-          this.dummyShake[x][y] = "empty"
+          this.shakeAwal[x][y] = "empty"
           if (this.checkBoogle(kata[j], x, y) === false) {
             this.lokasiHurufBerikutnya.splice(-1, 1)
             j = j - 2
@@ -117,15 +119,15 @@ class Boogle {
   solve() {
     let jumlahKetemu = 0
     let hasil = []
-    for (let i = 0; i < this.dummyKamus.length; i++) {
-      this.dummyShake = JSON.parse(JSON.stringify(this.reset))
+    for (let i = 0; i < this.kamus.length; i++) {
+      this.shakeAwal = JSON.parse(JSON.stringify(this.reset))
       this.lokasiHurufAwal = []
-      if (this.ketemu(this.dummyKamus[i])) {
-        hasil.push(this.dummyKamus[i])
+      if (this.ketemu(this.kamus[i])) {
+        hasil.push(this.kamus[i])
         jumlahKetemu++
       }
     }
-    return console.log(`${jumlahKetemu} word(s) found\n${hasil.join(', \n')}`)
+    console.log(`${jumlahKetemu} word(s) found\n${hasil.join(', \n')}`)
   }
 
 
@@ -140,7 +142,7 @@ let boogle = new Boogle(4);
 // console.log(boogle.checkBoogle('U', 1 , 3))
 // console.log(boogle.ketemu(boogle.dummyKamus[4]))
 
-console.log(boogle.dummyShake)
+console.log(boogle.shakeAwal)
 boogle.solve();
 // console.log(boogle)
 // console.log(boogle.cekAwal('TURN'))
