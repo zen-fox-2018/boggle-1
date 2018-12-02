@@ -5,29 +5,88 @@ const kamus = require('./data.js');
 //console.log(kamus.words)
 class Boggle {
   constructor(size , kamus) {
-    this.size = size
-    this.board = this.shake()
+    // this.size = size
+    // this.board = this.shake()
     this.kamus = kamus.words
-    // this.size = 4
+    this.size = 4
     // this.kamus= ['YOYO', 'SUSU', 'ANO', 'YAYA', 'SOSO']
-    // this.board= [ [ 'I', 'A', 'Y', 'O' ],
-    //               [ 'D', 'N', 'S', 'S' ],
-    //               [ 'O', 'U', 'S', 'N' ],
-    //               [ 'A', 'C', 'S', 'C' ] ]
-   
+    this.board= [ [ 'A', 'K', 'A', 'A' ],
+                  [ 'S', 'A', 'B', 'A' ],
+                  [ 'U', 'A', 'A', 'T' ],
+                  [ 'A', 'C', 'S', 'A' ] ]
     
   }
 
 
   solve(){
-    let hasil = []
+    let hasilOutput = []
+  
     for(let i = 0; i < this.kamus.length; i++){
-      if(this.cekKamus(this.kamus[i]).length){
-        hasil.push(this.kamus[i])
-        console.log(hasil,'ini hasil')
+      let dummyBoard = this.board.map(function(x){
+        return x.slice(0)
+      }) 
+      let temp = []
+      let k = 0
+      let cekKataPertama = this.kataPertama(this.kamus[i][0])
+        if(cekKataPertama.length){
+            temp.push(cekKataPertama)
+        } else{
+          temp = []
+        }
+          while(this.kamus[i][k+1] != undefined){ //Mencari kata selanjutnya ada di papan atau tidak
+            if(!temp[k]){ 
+              break 
+            }
+              for(let j = 0; j < temp[k].length; j ++){ 
+                let coorITemp = temp[k][j][0]
+                let coorJTemp = temp[k][j][1]
+                dummyBoard[coorITemp][coorJTemp] = ' '   
+                  // console.log(temp,'Ini temp')
+                  // console.log(k,'Ini current k')
+                  // console.log(dummyBoard)
+                  let hasil = []
+                  let coorAwal = [coorITemp -1 ,coorJTemp- 1]
+                  let coorAkhir = [coorITemp + 1, coorJTemp +1]
+                      if(coorAwal[0] < 0){
+                        coorAwal[0] = 0
+                      }
+                      if(coorAwal[1] < 0){
+                        coorAwal[1] = 0
+                      }
+                      if(coorAkhir[0] >= this.size ){
+                        coorAkhir[0] = this.size - 1
+                      }
+                      if(coorAkhir[1] >= this.size  ){
+                        coorAkhir[1] = this.size - 1
+                      }
+                      for(let x = coorAwal[0]; x <= coorAkhir[0]; x++){
+                        for(let m = coorAwal[1]; m <= coorAkhir[1]; m++){
+                          if(dummyBoard[x][m] == this.kamus[i][k+1]){
+                            dummyBoard[x][m] = ' '  
+                            hasil.push([x,m])
+                          } 
+                        }
+                      }
+                     // console.log(hasil,'Ini Coor hasil yang masuk ~~~~~')
+                let check = hasil
+                if(check.length){
+                  temp.push(check)
+                  break
+                } else{
+                  temp=[]
+                  break
+                } 
+              }
+          k++
+        }
+
+        if(temp.length){
+          hasilOutput.push(this.kamus[i])
+          console.log(hasilOutput,'ini hasil')
+        }
+        console.log(i,'Ini STEP~~~~~~~~~~~~~~~~~~')
       }
-    }
-    return hasil
+    return hasilOutput
   }
 
   sleep (milliseconds) {
@@ -39,71 +98,6 @@ class Boggle {
     }
   }
   
-  cekKamus(kataKamus){
-    let temp = []
-    let k = 0
-    let dummyBoard = this.board.map(function(x){
-      return x.slice(0)
-    })
-    let cekKataPertama = this.kataPertama(kataKamus[0])
-    if(cekKataPertama.length){
-
-      temp.push(cekKataPertama)
-    } else{
-      return []
-    }
-    while(kataKamus[k+1] != undefined){ //Mencari kata selanjutnya ada di papan atau tidak
-     if(!temp[k]){
-     
-       return []
-     }
-      for(let i = 0; i < temp[k].length; i ++){
-        let coorITemp = temp[k][i][0]
-        let coorJTemp = temp[k][i][1]
-        dummyBoard[coorITemp][coorJTemp] = ' '   
-          console.log(temp,'Ini temp')
-          console.log(k,'Ini current k')
-          console.log(dummyBoard)
-        let check = this.cekDalam([coorITemp,coorJTemp],kataKamus[k+1], dummyBoard)
-        if(check.length){
-          temp.push(check)
-          break  
-        } else{
-          return []
-        }
-      }
-    
-      k++
-    }
-    return temp
-  }
-
-  cekDalam(coorIndex , string , papan){
-    let hasil = []
-    let coorAwal = [coorIndex[0] -1 ,coorIndex[1] - 1]
-    let coorAkhir = [coorIndex[0] + 1, coorIndex[1] +1]
-    if(coorAwal[0] < 0){
-      coorAwal[0] = 0
-    }
-    if(coorAwal[1] < 0){
-      coorAwal[1] = 0
-    }
-    if(coorAkhir[0] >= this.size ){
-      coorAkhir[0] = this.size - 1
-    }
-    if(coorAkhir[1] >= this.size  ){
-      coorAkhir[1] = this.size - 1
-    }
-    for(let i = coorAwal[0]; i <= coorAkhir[0]; i++){
-      for(let j = coorAwal[1]; j <= coorAkhir[1]; j++){
-        if(papan[i][j] == string){
-          hasil.push([i,j])
-        }
-      }
-    }
-    // console.log(hasil,'Ini Coor hasil yang masuk ~~~~~')
-    return hasil
-  }
 
   kataPertama(string){
     let arrayFirst=[]
