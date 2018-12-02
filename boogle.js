@@ -53,21 +53,20 @@ class Boggle {
       return []
     }
     while(kataKamus[k+1] != undefined){ //Mencari kata selanjutnya ada di papan atau tidak
-     
+     if(!temp[k]){
+       return []
+     }
       for(let i = 0; i < temp[k].length; i ++){
-        
-        let coorITemp = temp[k][i].coorI
-        let coorJTemp = temp[k][i].coorJ
-        dummyBoard[coorITemp][coorJTemp] = ' '   
-         console.log(temp,'Ini temp')
+        console.log(temp,'Ini temp')
          console.log(dummyBoard)
+        let coorITemp = temp[k][i][0]
+        let coorJTemp = temp[k][i][1]
+        dummyBoard[coorITemp][coorJTemp] = ' '   
+         
         let check = this.cekDalam([coorITemp,coorJTemp],kataKamus[k+1], dummyBoard)
         if(check.length){
           temp.push(check)
-        }
-         else if(i -1 < 0){
-          return []
-        }
+        } 
       }
       k++
     }
@@ -93,10 +92,7 @@ class Boggle {
     for(let i = coorAwal[0]; i <= coorAkhir[0]; i++){
       for(let j = coorAwal[1]; j <= coorAkhir[1]; j++){
         if(papan[i][j] == string){
-          hasil.push({
-            coorI: i,
-            coorJ: j
-          })
+          hasil.push([i,j])
         }
       }
     }
@@ -104,20 +100,34 @@ class Boggle {
     return hasil
   }
 
+  // kataPertama(string){
+  //   let arrayFirst=[]
+  //   for(let i = 0; i < this.board.length; i++){
+  //     for(let j = 0; j < this.board[i].length; j++){
+  //       if(this.board[i][j] === string){
+  //         arrayFirst.push({
+  //           coorI : i,
+  //           coorJ : j
+  //         })
+  //       }
+  //     }
+  //   }
+  //   return arrayFirst
+  // }
+
+
   kataPertama(string){
     let arrayFirst=[]
     for(let i = 0; i < this.board.length; i++){
       for(let j = 0; j < this.board[i].length; j++){
         if(this.board[i][j] === string){
-          arrayFirst.push({
-            coorI : i,
-            coorJ : j
-          })
+          arrayFirst.push([i,j])
         }
       }
     }
     return arrayFirst
   }
+
 
 
   shake () {
