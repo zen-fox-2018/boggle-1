@@ -69,35 +69,33 @@ class Boggle {
     let colStart = this.getIndexStart(coordinate[1]);
     let colEnd = this.getIndexEnd(coordinate[1]);
 
-    while (true) {
-      let k = 1
-      while (k <= word.length-1) {
-        let isFound = false
-        for (let i = rowStart; i <= rowEnd; i++) {
-          for (let j = colStart; j <= colEnd; j++) {
-            if (this.BoogleBoard[i][j] === word[k]) {
-              if (this.isBlackListed(listCoordinate, [i, j]) === false) {
-                listCoordinate.push([i, j]);
-                rowStart = this.getIndexStart(i);
-                rowEnd = this.getIndexEnd(i);
-                colStart = this.getIndexStart(j);
-                colEnd = this.getIndexEnd(j);
-                isFound = true;
-                break;
-              }
+    let k = 1
+    while (k <= word.length-1) {
+      let isFound = false
+      for (let i = rowStart; i <= rowEnd; i++) {
+        for (let j = colStart; j <= colEnd; j++) {
+          if (this.BoogleBoard[i][j] === word[k]) {
+            if (this.isBlackListed(listCoordinate, [i, j]) === false) {
+              listCoordinate.push([i, j]);
+              rowStart = this.getIndexStart(i);
+              rowEnd = this.getIndexEnd(i);
+              colStart = this.getIndexStart(j);
+              colEnd = this.getIndexEnd(j);
+              isFound = true;
+              break;
             }
           }
-          if (isFound === true) {
-            k++;
-            break;
-          }
         }
-        if (isFound === false) {
-          return false;
+        if (isFound === true) {
+          k++;
+          break;
         }
       }
-      return true;
+      if (isFound === false) {
+        return false;
+      }
     }
+    return true;
   }
 
   isBlackListed(list, coordinate) {
@@ -108,6 +106,7 @@ class Boggle {
     }
     return false;
   }
+
   getIndexStart(index) {
     let indexStart = index;
     if (this.BoogleBoard[indexStart - 1] !== undefined) {
@@ -115,6 +114,7 @@ class Boggle {
     }
     return indexStart;
   }
+
   getIndexEnd(index) {
     let indexEnd = index;
     if (this.BoogleBoard[indexEnd + 1] !== undefined) {
