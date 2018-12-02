@@ -6,15 +6,15 @@ const kamus = require('./data.js');
 class Boggle {
   constructor(num) {
     this.size = num;
-    this.myBoard =
-    [ [ 'D', 'E', 'H', 'I'],
-      [ 'K', 'L', 'P', 'S' ],
-      [ 'Y', 'E', 'U', 'T' ],
-      [ 'E', 'O', 'R', 'N' ] ]
+    // this.myBoard =
+    // [ [ 'D', 'E', 'H', 'I'],
+    //   [ 'K', 'L', 'P', 'S' ],
+    //   [ 'Y', 'E', 'U', 'T' ],
+    //   [ 'E', 'O', 'R', 'N' ] ]
 
-    // this.myBoard = this.shake();
-    // this.dictionary = kamus;
-    this.dictionary = { words: [ 'APPLE', 'SIT', 'TRIP', 'TURN', 'SUPER' ] };
+    this.myBoard = this.shake();
+    this.dictionary = kamus;
+    // this.dictionary = { words: [ 'APPLE', 'SIT', 'TRIP', 'TURN', 'SUPER' ] };
   }
 
   shake () {
@@ -40,7 +40,9 @@ class Boggle {
       }
 
     }
-    console.log(myResult);
+
+    console.log(`${myResult.length} WORDS FOUND : `);
+    myResult.forEach(e => console.log(`- ${e}`));
   }
 
   checkSentence (sentence){
@@ -62,8 +64,6 @@ class Boggle {
         if (this.getNext(nextCheck.index, sentence[index + 1], nextCheck.board).length) {
           this.getNext(nextCheck.index, sentence[index + 1], nextCheck.board).forEach( e => tempResult.push(e));
         }
-        debugger;
-        let tempP = JSON.stringify(tempResult);
       }
       if(tempResult.length) {
         myTrack[myTrack.length] = tempResult;
