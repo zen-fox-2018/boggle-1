@@ -20,6 +20,7 @@ class Boggle {
 
   shake(size) { // mengenerate board sesuai size
     let output = []
+
     for (let i = 0 ; i < size ; i++ ) {
       let array = []
       for (let j = 0 ; j < size ; j++ ) {
@@ -27,12 +28,14 @@ class Boggle {
       }
       output[i] = array
     }
+
     return output
   }
 
   random() { // method random u/ mengenerate huruf di board
-    let kamus = 'AAAABCDEEEEFGHIIIIJKLMNOOOOPQRSTUUUUVWXYZ'
+    let kamus = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     let rand = Math.floor(Math.random() * kamus.length)
+
     return kamus[rand]
   }
 
@@ -42,6 +45,7 @@ class Boggle {
         return [ i , this.board[i].indexOf(letter) ]
       }
     }
+
     return false
   }
 
@@ -59,8 +63,7 @@ class Boggle {
       jstart = 0
       jover = 1
     }
-    // console.log(value);
-
+    
     for ( let i = istart ; i <= iover ; i++ ) {
       for (let j = jstart ; j <= jover ; j++ ) {
         if (i < this.board.length && j < this.board.length){
@@ -70,34 +73,35 @@ class Boggle {
         }
       }
     }
+
     return false
   }
 
   // pengecekan rekursif
   match( x, y, word , counter = 0) {
     let result = false
-    if (counter+1 === word.length) {
-      this.output.push(word)
+    if ( counter + 1 === word.length ) {
       return true
     } else {
       this.board[x][y] = '#'
       if ( this.checkGrid(x, y, word[counter+1] ) !== false) {
-          let koor = this.checkGrid( x, y, word[counter+1] )
-          this.match( koor[0], koor[1], word, counter+1 )
-          result = true
+        let koor = this.checkGrid( x, y, word[counter+1] )
+        result = this.match( koor[0], koor[1], word, counter+1 )
       }
     }
+
     this.board[x][y] = word[counter]
+
     return result
   }
 
   solve() {
     for ( let i = 0 ; i < this.word.length ; i++ ) {
       if ( this.checkFirst(this.word[i][0]) !== false ) {
-        // console.log(`${this.word[i]} ==> masuk`);
         let koor = this.checkFirst(this.word[i][0])
-        let wordNow = this.word[i]
-        this.match(koor[0], koor[1], wordNow)
+        if (this.match(koor[0], koor[1], this.word[i])) {
+          this.output.push(this.word[i])
+        }
       }
     }
 
