@@ -1,98 +1,146 @@
 
-
+const kamus = require('./data.js');
 
 class Boogle {
 
-  constructor(num) {
-    this.board = this.board()
-    this.dictionary = {words : ['COBA', 'BAD', 'SASA', 'PAPA']}
-  }
-
-  // board(num) {
-  // let row = []
-  // let kamus = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  //     for(let i = 0; i < num; i++){
-  //     let col = []
-  //         for(let j = 0; j < num; j++){
-  //             let k = Math.floor(Math.random()*25)
-  //             col.push(kamus[k])
-  //         }
-  //     row.push(col)
-  //     }
-  //     return row
-  // }
-
-  board() {
-      let row = [
-          [ 'C', 'A', 'D', 'M' ],
-          [ 'O', 'B', 'W', 'K' ],
-          [ 'S', 'A', 'S', 'A' ],
-          [ 'A', 'D', 'R', 'T' ] ]
-      return row
-  }
-
-
-  solve() {
-      let board = this.board
-      let sth = []
-      for(let i = 0; i < board.length; i++) {
-          for(let j = 0; j < board[i].length; j++) {
-              let str = board[i][j]
-                  while (this.checkAddLetter(str) === true) {
-                      i = this.addHorizontal1(i,j)[0]
-                      j = this.addHorizontal1(i,j)[1]
-                      if(board[i][j] === undefined){
-                          break
-                      }
-                      str+= board[i][j]    
-                  }
-                  sth.push(str)
-          }
-      }
-      
-      let result = []
-      for(let i = 0; i < sth.length; i++) {
-          for(let j = 0; j < this.dictionary.words.length; j++){
-              if(sth[i] === this.dictionary.words[j]){
-                  result.push(sth[i])
-              }
-          }
-      }
-      return result
-  }
-
-
-  checkAddLetter(newStr) {
-      let dict = []
-      for(let i = 0; i < this.dictionary.words.length; i++) {
-          let temp = ''
-          for(let j = 0; j < newStr.length; j++) {
-              temp+= this.dictionary.words[i][j]
-          }
-          dict.push(temp)
-      }
-      for(let i = 0; i < dict.length; i++) {
-          if(dict[i] === newStr) {
-              return true
-          }
-      }
-      return false
+    constructor(num) {
+      this.num = num
+      this.board = this.board(num)
+      this.dictionary = kamus.words
+     
     }
   
+    board(num) {
+    let row = []
+    let kamus = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        for(let i = 0; i < num; i++){
+        let col = []
+            for(let j = 0; j < num; j++){
+                let k = Math.floor(Math.random()*26)
+                col.push(kamus[k])
+            }
+        row.push(col)
+        }
+        return row
+    }
+    // board() {
+    //     let row = [
+    //         [ 'C', 'A', 'D', 'M' ],
+    //         [ 'O', 'B', 'W', 'P' ],
+    //         [ 'S', 'A', 'S', 'A' ],
+    //         [ 'A', 'D', 'A', 'P' ] ]
+    //     return row
+    // }
+    
+    solve() {
+        let count = 0
+        let arr = []
+        for(let i = 0; i < this.dictionary.length; i++) {
+            if(this.checkFirstLetter(this.dictionary[i][0], this.dictionary[i]) === true) {
+                count++
+                arr.push(this.dictionary[i])
+            }
+        }
+        console.log (this.board)
+        return ` ${count} words found : ${arr}`
+    }
 
+    checkFirstLetter (firstLetter, str) {
+        for(let i = 0; i < this.board.length; i++) {
+            for(let j = 0; j < this.board.length; j++) {
+                if(firstLetter === this.board[i][j] && this.checkGrid(i,j,str) ===true) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
 
-  addHorizontal1(row, col) {
+    checkGrid (row, col, str) {
+        let visitedList = [[row,col]]
+        let rowStart = row - 1
+        let rowEnd = row + 1
+        let colStart = col - 1
+        let colEnd = col + 1
 
-      let index = [row, col+1]
-      return index
+        if(rowStart < 0) {
+            rowStart = 0
+        }
+        if(rowEnd > this.num) {
+            rowEnd = this.num
+        }
+        if(colStart < 0) {
+            colStart = 0
+        }
+        if(colEnd > this.num) {
+            colEnd = 0
+        }
+
+        let k = 1
+        while (k < str.length){
+            let isFound = false
+            for(let i = rowStart; i < rowEnd; i++) {
+                for(let j = colStart; j < colEnd; j++) {
+                    if(this.board[i][j] === str[k] && this.visited(visitedList, i, j) === false) {
+                        visitedList.push([i,j])  
+                        rowStart = row - 1
+                        rowEnd = row + 1
+                        colStart = col - 1
+                        colEnd = col + 1
+                        if(rowStart < 0) {
+                            rowStart = 0
+                        }
+                        if(rowEnd > this.num) {
+                            rowEnd = this.num
+                        }
+                        if(colStart < 0) {
+                            colStart = 0
+                        }
+                        if(colEnd > this.num) {
+                            colEnd = 0
+                        }
+                    
+                        isFound = true
+                        break
+
+                    }
+                }
+                if(isFound == true) {
+                    k++
+                    break
+                }
+            }
+        
+           
+            if(isFound == false) {
+                return false
+            }
+        }
+        
+        return true
+    }
+
+    visited (visitedList, row, col) {
+        for(let i = 0; i < visitedList.length; i++) {
+            if(row === visitedList[i][0]&& col === visitedList[i][1]) {
+                return true
+            }
+        }
+        return false
+    }
   }
-
   
-}
-
-let boogle = new Boogle();
-// boggle.shake();
+  let boogle = new Boogle(4);
+  // boggle.shake();
 //   boogle.solve();
-console.log(boogle.solve());
+// console.log(boogle.dictionary[0]);
 
+// console.log(boogle.board)
+
+  console.log(boogle.solve());
+//   console.log(boogle.checkVisited([[1,2]],1,2));
+//   console.log((boogle.checkGrid(0,0,'COBA')));
+  
+//   console.log(boogle.firsHistory);
+  
 
